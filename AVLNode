@@ -1,0 +1,19 @@
+package Ph2_CSC212;
+
+public class AVLNode<T> {
+   public int key;             
+   public T data;               
+   public int bal; // balance bal ?              
+   public AVLNode<T> left;
+   public AVLNode<T> right;
+
+    public AVLNode(int key, T data) {
+        this.key = key;
+        this.data = data;
+        this.bal = 0;
+        this.left = null;
+        this.right = null;
+    }
+    
+}
+
