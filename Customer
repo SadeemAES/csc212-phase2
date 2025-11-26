@@ -1,0 +1,86 @@
+package Ph2_CSC212;
+
+
+import Ph2_CSC212.LinkedList;
+import Ph2_CSC212.Review;
+
+public class Customer {
+	
+		private int customerId ;
+		private String name ;
+		private String email ; 
+		
+		 private AVLTree<Integer> orders;
+		 private AVLTree<Review> reviews;
+
+
+		
+		public Customer(int customerId, String name, String email) {
+	        this.customerId = customerId;
+	        this.name = name;
+	        this.email = email;
+	        orders = new AVLTree<>();
+	        reviews = new AVLTree<>();
+
+	    }
+		
+		// place a new order
+	    public void placeOrder(int orderID) {
+	        orders.insert(orderID, orderID);
+	    }
+
+	    public void removeOrder(int orderID) {
+	        orders.removeKey(orderID);
+	    }
+		
+		
+	    public void viewOrderHistory() {
+
+	        if (orders.empty()) {
+	            System.out.println("No orders for this customer.");
+	            return;
+	        }
+
+	        System.out.println("Orders for customer " + name + ":");
+	        printOrdersInOrder(orders.getRoot());
+	    }
+	    
+	    private void printOrdersInOrder(AVLNode<Integer> node) {
+	        if (node == null) return;
+
+	        printOrdersInOrder(node.left);
+
+	        System.out.println("Order ID: " + node.data);
+
+	        printOrdersInOrder(node.right);
+	    }
+		
+	    public void addReview(Review r) {
+	        reviews.insert(r.getReviewId(), r);
+	    }
+
+	    
+	    
+
+		
+		public int getCustomerId() { return customerId; }
+	    public String getName()     { return name; }
+	    public String getEmail()    { return email; }
+
+	    public AVLTree<Integer> getOrders() { return orders; }
+	    public AVLTree<Review> getReviewsTree() { return reviews; }
+	}
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
