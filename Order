@@ -1,0 +1,126 @@
+package csc212_phase2;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class Order {
+ 
+	private int id;
+	private	int cusRef;
+	private AVLTree<Integer> products= new AVLTree<Integer>();
+	private	double totalPrice;
+	private LocalDate orderDate;
+	private String status;
+	
+	
+	public Order() { // Default constructor 
+		id=0;
+		cusRef=0;
+		totalPrice=0;  
+		status="";
+	}
+	
+	public Order(int id , int cusRef, Integer pid[] , double price, String date, String status) { //Parameterized constructor 
+		this.id=id;
+		this.cusRef=cusRef;
+		this.totalPrice=price;
+		try {
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+		    orderDate = LocalDate.parse(date, formatter);
+		} catch (Exception e) {
+		    orderDate = LocalDate.parse(date); 
+		}
+		this.status=status;
+		
+		// insert product IDs inside AVL tree
+        for (int p : pid)
+            products.insert(p, p);   // key = productId , data = productId
+    }
+	
+//================= sitters&getters ==================
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public int getCusRef() {
+		return cusRef;
+	}
+
+	public void setCusRef(int cusRef) {
+		this.cusRef = cusRef;
+	}
+
+	public AVLTree<Integer> getProducts() { 
+		return products;
+	}
+
+	public void setProducts(AVLTree<Integer> products) {
+		this.products = products;
+	}
+
+	public double getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
+
+	public LocalDate getOrderDate() {
+		return orderDate;
+	}
+
+	public void setOrderDate(LocalDate orderDate) {
+		this.orderDate = orderDate;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	
+	 //==================== print order ============================
+    
+	public String printOrder() {
+        StringBuilder productStr = new StringBuilder();
+        printProductsInOrder(products.getRoot(), productStr);
+
+        return "Order [id=" + id 
+            + ", cusRef=" + cusRef 
+            + ", products=[" + productStr.toString() + "]"
+            + ", totalPrice=" + totalPrice
+            + ", orderDate=" + orderDate 
+            + ", status=" + status + "]";   
+    }
+    
+    private void printProductsInOrder(AVLNode<Integer> node, StringBuilder sb) {
+        if (node == null) return;
+
+        printProductsInOrder(node.left, sb);
+        
+        if (sb.length() > 0) sb.append(", ");
+        sb.append(node.data);
+
+        printProductsInOrder(node.right, sb);
+    }
+
+
+  //==================== add product ============================
+    public void addProduct(Integer product) {
+    	products.insert(product.getId(), product);
+    } 
+    
+  //==================== remove product =========================
+    public boolean removeProduct(Integer p) { 
+        return products.removeKey(p);
+    }
+
+
+	
+} 
