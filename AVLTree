@@ -1,26 +1,55 @@
-package Ph2_CSC212;
+package csc212_phase2;
 
-public class AVLTree<T> {
-
-    private AVLNode<T> root, current;
+public class AVLTree<T> { 
+	
+    public int size;
+    public AVLNode<T> root, current; 
+ 
 
     public AVLTree() {
-        current = root = null;
-    }
+        current = root = null; 
+        size = 0;
+    } 
 
     public boolean empty() {
         return root == null;
     }
 
     public boolean full() {
-        return false;
+        return false; 
     }
 
+    // ===================== RETRIEVE =====================
     public T retrieve() {
         return current.data;
     }
 
-    // ===================== FIND =====================
+    // ===================== UPDATE =====================
+    public void update(T e) {
+        if (current != null)
+            current.data = e;
+    } 
+
+    
+    // ===================== SEARCH =====================
+    public T search(int key) {
+        AVLNode<T> p = root;
+
+        while (p != null) {
+            if (key == p.key) {
+                current = p; 
+                return p.data;
+            }
+            else if (key < p.key)
+                p = p.left;
+            else
+                p = p.right;
+        }
+        return null;
+    }
+    
+
+    // ===================== FIND KEY =====================
     public boolean findKey(int k) {
 
         AVLNode<T> p = root;
@@ -42,10 +71,11 @@ public class AVLTree<T> {
 
     // ===================== INSERT (AVL) =====================
     public boolean insert(int key, T val) {
-
+ 
         if (findKey(key)) return false;
 
         root = AVLInsert(root, key, val);
+        size++;
         current = root;
         return true;
     }
@@ -69,6 +99,7 @@ public class AVLTree<T> {
         if (!findKey(key)) return false;
 
         root = AVLDelete(root, key);
+        size--;
         current = root;
         return true;
     }
@@ -129,42 +160,53 @@ public class AVLTree<T> {
         return root;
     }
 
-    // ===================== HEIGHT + BALANCE =====================
+
+    // ===================== HEIGHT + BALANCE FACTOR =====================
 
     private int height(AVLNode<T> node) {
         if (node == null) return -1;
         return 1 + Math.max(height(node.left), height(node.right));
     }
 
-    private int balance(AVLNode<T> node) {
+    private int getBF(AVLNode<T> node) {
         if (node == null) return 0;
         return height(node.right) - height(node.left);
     }
 
-    // ===================== ROTATION LOGIC =====================
+
+    // ===================== ROTATION + BALANCE UPDATE =====================
 
     private AVLNode<T> updateBalance(AVLNode<T> node) {
 
-        int bf = balance(node);
+        int bf = getBF(node);
 
-        // Right heavy
+        // update enum balance inside the node
+        if (bf > 0)
+            node.bal = Balance.PlusOne;
+        else if (bf < 0) 
+            node.bal = Balance.MinusOne;
+        else
+            node.bal = Balance.Zero;
+
+        // Right heavy 
         if (bf > 1) {
-            if (balance(node.right) >= 0)
-                return rotateLeftLeft(node);   // RR
+            if (getBF(node.right) >= 0)
+                return rotateRightRight(node);   // RR
             else
-                return rotateRightLeft(node);  // RL
+                return rotateRightLeft(node);    // RL
         }
 
         // Left heavy
         if (bf < -1) {
-            if (balance(node.left) <= 0)
-                return rotateRightRight(node); // LL
+            if (getBF(node.left) <= 0)
+                return rotateLeftLeft(node);     // LL
             else
-                return rotateLeftRight(node);  // LR
+                return rotateLeftRight(node);    // LR
         }
 
         return node;
     }
+
 
     // LL rotation
     private AVLNode<T> rotateLeftLeft(AVLNode<T> node) {
@@ -203,4 +245,7 @@ public class AVLTree<T> {
         node.right = rotateLeftLeft(node.right);
         return rotateRightRight(node);
     }
+    
+    
+
 }
