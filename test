@@ -1,1 +1,84 @@
+package Ph2_CSC212;
+import java.util.Scanner;
+
+public class Main {
+
+    // Data from files (Phase I dataset)
+    public static CustomerData cdata = new CustomerData("customers.csv");
+    public static ProductData pdata = new ProductData("products.csv");
+    public static OrderData odata = new OrderData("orders.csv");
+    public static ReviewData rdata = new ReviewData("reviews.csv");
+
+    // BST / AVL Structures (Phase II requirement)
+    public static AVLTree<Customer> customers = cdata.getCustomersIDs();
+    public static AVLTree<Product> products = pdata.getProductsIDs();
+    public static AVLTree<Order> orders = odata.getOrdersIDs();
+
+    public static void main(String[] args) {
+
+        Scanner input = new Scanner(System.in);
+        int choice = -1;
+
+        while (choice != 0) {
+            System.out.println("\n============================");
+            System.out.println("          MAIN MENU");
+            System.out.println("============================");
+            System.out.println("1) Customer System");
+            System.out.println("2) Product System");
+            System.out.println("3) Order System");
+            System.out.println("4) Review System");
+            System.out.println("0) Exit");
+            System.out.print("Enter choice: ");
+
+            choice = input.nextInt();
+            System.out.println();
+
+            switch (choice) {
+
+                case 1:
+                    customerMenu();
+                    break;
+
+                case 2:
+                    productMenu();
+                    break;
+
+                case 3:
+                    orderMenu();
+                    break;
+
+                case 4:
+                    reviewMenu();
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    // ============================
+    // PLACEHOLDER MENUS (empty)
+    // ============================
+
+    public static void customerMenu() {
+        System.out.println("Customer system opened...");
+    }
+
+    public static void productMenu() {
+        System.out.println("Product system opened...");
+    }
+
+    public static void orderMenu() {
+        System.out.println("Order system opened...");
+    }
+
+    public static void reviewMenu() {
+        System.out.println("Review system opened...");
+    }
+}
 
