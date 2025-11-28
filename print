@@ -1,0 +1,14 @@
+private void printAllKeysDataRec(AVLNode<T> node) {
+if(node == null)
+	return;
+
+printAllKeysDataRec(node.left);
+
+
+if(node.data instanceof Customer) {
+	Customer c = (Customer) node.data;
+	System.out.println("Customer ID : " + c.getCustomerId() + " Name : "+ c.getName() + " Email : " + c.getEmail());
+}
+
+printAllKeysDataRec(node.right);
+ }
