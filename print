@@ -1,4 +1,12 @@
-private void printAllKeysDataRec(AVLNode<T> node) {
+public void printAllKeysData() {
+if(empty()) {
+	System.out.println("Tree is empty");
+	return;
+}
+printAllKeysDataRec(root);
+ }
+    
+ private void printAllKeysDataRec(AVLNode<T> node) {
 if(node == null)
 	return;
 
