@@ -1,0 +1,82 @@
+package ds2;
+
+public class Product {
+int productId;
+String name;
+double price;
+int stock;
+
+AVLTree<Integer> reviews = new AVLTree<Integer>();
+
+public Product() {
+productId = 0;
+name = "";
+price =0 ;
+stock = 0;
+}
+public Product(int pid , String n, double p , int s) {
+	productId = pid;
+	name = n;
+	price = p;
+	stock = s;
+}
+public int getProductId() {
+	return productId;
+}
+public void setProductId(int productId) {
+	this.productId = productId;
+}
+public String getName() {
+	return name;
+}
+public void setName(String name) {
+	this.name = name;
+}
+public double getPrice() {
+	return price;
+}
+public void setPrice(double price) {
+	this.price = price;
+}
+public int getStock() {
+	return stock;
+}
+public void setStock(int stock) {
+	this.stock = stock;
+}
+public AVLTree<Integer> getReviews() {
+	return reviews;
+}
+public void setReviews(AVLTree<Integer> reviews) {
+	this.reviews = reviews;
+}
+public void addStock(int stock){
+    this.stock+= stock;
+}
+
+public void removeStock(int stock){
+    this.stock-= stock;
+}
+public void addReview(int key ,Integer r) {
+	reviews.insert(key, r);
+}
+public boolean removeReview(int key ) {
+	return reviews.removeKey(key);
+}
+public AVLTree<Integer> getreviews(){
+	return reviews;
+}
+public String toString(){
+    String str = "Product Id : " + productId + " Name : "+ name + " Price = "+price+" Stock :"+stock;
+    
+if(!reviews.empty())
+{
+    str += " Has reviews";
+    }
+
+return str;}
+
+
+
+
+}
