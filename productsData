@@ -230,8 +230,11 @@ boolean rightch =  productsByPriceRec( node.right, miniP ,  maxP);
 return found || leftch || rightch;
 }
 //////////////////////////////////////////////////////////
- 
- 
+ public boolean checkProductId(int pId){
+	Product p = products.search(pId);
+	return p != null;
+}
+///////////////////////////////////////////////////// 
  
  
  
