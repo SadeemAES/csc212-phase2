@@ -1,0 +1,8 @@
+package Ph2_CSC212;
+
+
+public enum Balance {
+    PlusOne,   // +1
+    Zero,      // 0
+    MinusOne   // -1
+}
