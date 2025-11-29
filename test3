@@ -1,0 +1,285 @@
+package Ph2_CSC212;
+
+import java.util.Scanner;
+
+public class main {
+
+    public static Scanner input = new Scanner(System.in);
+
+    // Phase I Loading
+    public static productsData pdata = new productsData("products.csv");
+    public static OrderAdmin odata = new OrderAdmin("orders.csv");
+    public static reviewsData rdata = new reviewsData("reviews.csv");
+
+    // Phase II Structures
+    public static CustomerData cdata = new CustomerData("customers.csv");
+    public static AVLTree<Product> products = pdata.getProductsList();
+    public static AVLTree<Order> orders = odata.getOrdersIDs();
+    public static LinkedList<Review> reviews = rdata.getReviewList();
+
+
+    public static void main(String[] args) {
+
+        int choice = -1;
+
+        while (choice != 0) {
+
+            System.out.println("\n============================");
+            System.out.println("          MAIN MENU");
+            System.out.println("============================");
+            System.out.println("1) Customer System");
+            System.out.println("2) Product System");
+            System.out.println("3) Order System");
+            System.out.println("4) Review System");
+            System.out.println("0) Exit");
+            System.out.print("Enter choice: ");
+
+            choice = input.nextInt();
+            System.out.println();
+
+            switch (choice) {
+
+                case 1:
+                    customerMenu();
+                    break;
+
+                case 2:
+                    productMenu();
+                    break;
+
+                case 3:
+                    orderMenu();
+                    break;
+
+                case 4:
+                    reviewMenu();
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+
+    // ======================================================
+    // CUSTOMER MENU
+    // ======================================================
+    public static void customerMenu() {
+
+        int choice = -1;
+
+        while (choice != 0) {
+
+            System.out.println("\n============================");
+            System.out.println("        CUSTOMER MENU");
+            System.out.println("============================");
+            System.out.println("1) Insert new customer");
+            System.out.println("2) Search for customer by ID");
+            System.out.println("3) List all customers alphabetically");
+            System.out.println("4) Customer order history");
+            System.out.println("0) Exit");
+            System.out.print("Enter choice: ");
+
+            choice = input.nextInt();
+            input.nextLine();
+            System.out.println();
+
+            switch (choice) {
+
+                case 1: {
+                    System.out.print("Enter Customer ID: ");
+                    int id = input.nextInt();
+                    input.nextLine();
+
+                    System.out.print("Enter Name: ");
+                    String name = input.nextLine();
+
+                    System.out.print("Enter Email: ");
+                    String email = input.nextLine();
+
+                    Customer c = new Customer(id, name, email);
+
+                    cdata.addCustomer(c);
+                    break;
+                }
+
+                case 2: {
+                    Customer c = cdata.getCustomer();
+
+                    if (c != null) {
+                        System.out.println("\nCustomer Found:");
+                        System.out.println("ID: " + c.getCustomerId());
+                        System.out.println("Name: " + c.getName());
+                        System.out.println("Email: " + c.getEmail());
+                    }
+                    break;
+                }
+
+                case 3:
+                    System.out.println("\nAll customers sorted alphabetically:");
+                    CustomerData.customersByName.inOrder();
+                    break;
+
+                case 4:
+                    cdata.OrderHistory();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Invalid choice — try again.");
+            }
+        }
+    }
+
+
+
+    // ======================================================
+    // PRODUCT MENU
+    // ======================================================
+    public static void productMenu() {
+        int ch;
+
+        do {
+            System.out.println("\n============================");
+            System.out.println("         PRODUCT MENU");
+            System.out.println("============================");
+            System.out.println("1) Add a new product");
+            System.out.println("2) Remove a product");
+            System.out.println("3) Update product");
+            System.out.println("4) Search by ID");
+            System.out.println("5) Search by name");
+            System.out.println("6) Track out-of-stock products");
+            System.out.println("7) List products within price range");
+            System.out.println("8) Display customers who reviewed a product");
+            System.out.println("0) Return to main menu");
+
+            ch = input.nextInt();
+
+            switch (ch) {
+
+                case 1:
+                    pdata.addProduct();
+                    break;
+
+                case 2:
+                    pdata.removeProduct();
+                    break;
+
+                case 3:
+                    pdata.updateProduct();
+                    break;
+
+                case 4: {
+                    Product p = pdata.searchProductbyID();
+                    if (p == null)
+                        System.out.println("Product not found");
+                }
+                break;
+
+                case 5: {
+                    Product p = pdata.searchProductbyName();
+                    if (p != null)
+                        System.out.println(p);
+                    else
+                        System.out.println("Product not found");
+                }
+                break;
+
+                case 6:
+                    pdata.outOfStockProducts();
+                    break;
+
+                case 7:
+                    pdata.productsByPrice();
+                    break;
+
+                case 8:
+                    customerReviewedProduct_ID();
+                    break;
+
+                case 0:
+                    System.out.println("Returning to main menu...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice.");
+            }
+
+        } while (ch != 0);
+    }
+
+
+
+    // ======================================================
+    // ORDER MENU (EMPTY)
+    // ======================================================
+    public static void orderMenu() {
+        System.out.println("Order system opened...");
+    }
+
+
+    // ======================================================
+    // REVIEW MENU (EMPTY)
+    // ======================================================
+    public static void reviewMenu() {
+        System.out.println("Review system opened...");
+    }
+
+
+
+    // ======================================================
+    // DISPLAY CUSTOMERS WHO REVIEWED A PRODUCT
+    // ======================================================
+    public static void customerReviewedProduct_ID() {
+
+        AVLTree<Customer> c = new AVLTree<>();
+
+        System.out.println("Enter product ID:");
+        int pid = input.nextInt();
+
+        while (!products.findKey(pid)) {
+            System.out.println("Product not found, re-enter:");
+            pid = input.nextInt();
+        }
+
+        if (reviews.empty()) {
+            System.out.println("No reviews found.");
+            return;
+        }
+
+        reviews.findFirst();
+
+        while (!reviews.last()) {
+
+            Review r = reviews.retrieve();
+
+            if (r.getProductId() == pid) {
+                if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+                    Customer found = CustomerData.customersIDs.retrieve();
+                    c.insert(found.getCustomerId(), found);
+                }
+            }
+
+            reviews.findNext();
+        }
+
+        // Check last element
+        Review r = reviews.retrieve();
+        if (r.getProductId() == pid) {
+            if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+                Customer found = CustomerData.customersIDs.retrieve();
+                c.insert(found.getCustomerId(), found);
+            }
+        }
+
+        c.inOrder();
+    }
+
+}
