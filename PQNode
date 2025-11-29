@@ -1,0 +1,47 @@
+package Ph2_CSC212;
+import Ph2_CSC212.PQNode;
+public class PQNode<T> {
+	
+			 public T data ;
+			 public float priority;
+			 public PQNode<T> next;
+			 
+			 public PQNode(){
+			     next = null;
+			 }
+			 public PQNode(T e , float p){
+			     data = e;
+			     priority = p;
+			 }
+
+			    public T getData() {
+			        return data;
+			    }
+
+			    public void setData(T data) {
+			        this.data = data;
+			    }
+
+			    public float getPriority() {
+			        return priority;
+			    }
+
+			    public void setPriority(float priority) {
+			        this.priority = priority;
+			    }
+
+			    public PQNode<T> getNext() {
+			        return next;
+			    }
+
+			    public void setNext(PQNode<T> next) {
+			        this.next = next;
+			    }
+			 
+			}
+
+
+
+
+
+
