@@ -1,0 +1,214 @@
+package Ph2_CSC212;
+
+public class AVLMap<K extends Comparable<K>, T> {
+
+    public int size;
+    public AVLNodeMap<K,T> root, current;
+
+    public AVLMap() {
+        root = current = null;
+        size = 0;
+    }
+
+    public boolean empty() {
+        return root == null;
+    }
+
+    public boolean full() {
+        return false;
+    }
+
+    public T retrieve() {
+        return current.data;
+    }
+
+    public void update(T e) {
+        if (current != null)
+            current.data = e;
+    }
+
+    public T search(K key) {
+    	AVLNodeMap<K,T> p = root;
+
+        while (p != null) {
+            int cmp = key.compareTo(p.key);
+
+            if (cmp == 0) {
+                current = p;
+                return p.data;
+            }
+            else if (cmp < 0)
+                p = p.left;
+            else
+                p = p.right;
+        }
+        return null;
+    }
+
+    public boolean findKey(K k) {
+
+    	AVLNodeMap<K,T> p = root;
+        while (p != null) {
+            current = p;
+
+            int cmp = k.compareTo(p.key);
+
+            if (cmp == 0)
+                return true;
+            else if (cmp < 0)
+                p = p.left;
+            else
+                p = p.right;
+        }
+        return false;
+    }
+
+    public boolean insert(K key, T val) {
+
+        if (findKey(key)) return false;
+
+        root = AVLInsert(root, key, val);
+        size++;
+        current = root;
+        return true;
+    }
+
+    private AVLNodeMap<K,T> AVLInsert(AVLNodeMap<K,T> node, K key, T val) {
+
+        if (node == null)
+            return new AVLNodeMap<K,T>(key, val);
+
+        int cmp = key.compareTo(node.key);
+
+        if (cmp < 0)
+            node.left = AVLInsert(node.left, key, val);
+        else
+            node.right = AVLInsert(node.right, key, val);
+
+        return updateBalance(node);
+    }
+
+    public boolean removeKey(K key) {
+
+        if (!findKey(key)) return false;
+
+        root = AVLDelete(root, key);
+        size--;
+        current = root;
+        return true;
+    }
+
+    private AVLNodeMap<K,T> AVLDelete(AVLNodeMap<K,T> node, K key) {
+
+        if (node == null)
+            return null;
+
+        int cmp = key.compareTo(node.key);
+
+        if (cmp < 0)
+            node.left = AVLDelete(node.left, key);
+
+        else if (cmp > 0)
+            node.right = AVLDelete(node.right, key);
+
+        else { // Found
+
+            if (node.left == null)
+                return node.right;
+            if (node.right == null)
+                return node.left;
+
+            AVLNodeMap<K,T> min = node.right;
+            while (min.left != null)
+                min = min.left;
+
+            node.key = min.key;
+            node.data = min.data;
+
+            node.right = AVLDelete(node.right, min.key);
+        }
+
+        return updateBalance(node);
+    }
+
+    public void inOrder() {
+        if (root == null)
+            System.out.println("empty tree");
+        else
+            inOrder(root);
+    }
+
+    private void inOrder(AVLNodeMap<K,T> p) {
+
+        if (p == null) return;
+
+        inOrder(p.left);
+        System.out.println("key = " + p.key + " , data = " + p.data);
+        inOrder(p.right);
+    }
+
+
+    private int height(AVLNodeMap<K,T> node) {
+        if (node == null) return -1;
+        return 1 + Math.max(height(node.left), height(node.right));
+    }
+
+    private int getBF(AVLNodeMap<K,T> node) {
+        return height(node.right) - height(node.left);
+    }
+
+    private AVLNodeMap<K,T> updateBalance(AVLNodeMap<K,T> node) {
+
+        int bf = getBF(node);
+
+        if (bf > 1) {
+            if (getBF(node.right) >= 0)
+                return rotateRightRight(node);
+            else
+                return rotateRightLeft(node);
+        }
+
+        if (bf < -1) {
+            if (getBF(node.left) <= 0)
+                return rotateLeftLeft(node);
+            else
+                return rotateLeftRight(node);
+        }
+
+        return node;
+    }
+
+    private AVLNodeMap<K,T> rotateLeftLeft(AVLNodeMap<K,T> node) {
+
+    	AVLNodeMap<K,T> a = node.left;
+    	AVLNodeMap<K,T> b = a.right;
+
+        a.right = node;
+        node.left = b;
+
+        return a;
+    }
+
+    private AVLNodeMap<K,T> rotateRightRight(AVLNodeMap<K,T> node) {
+
+    	AVLNodeMap<K,T> a = node.right;
+    	AVLNodeMap<K,T> b = a.left;
+
+        a.left = node;
+        node.right = b;
+
+        return a;
+    }
+
+    private AVLNodeMap<K,T> rotateLeftRight(AVLNodeMap<K,T> node) {
+
+        node.left = rotateRightRight(node.left);
+        return rotateLeftLeft(node);
+    }
+
+    private AVLNodeMap<K,T> rotateRightLeft(AVLNodeMap<K,T> node) {
+
+        node.right = rotateLeftLeft(node.right);
+        return rotateRightRight(node);
+    }
+}
