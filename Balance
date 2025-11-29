@@ -1,8 +1,0 @@
-package csc212_phase2;
-
-public enum Balance {
-    PlusOne,   // +1
-    Zero,      // 0
-    MinusOne   // -1
-}
- 
