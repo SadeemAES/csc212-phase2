@@ -1,0 +1,823 @@
+package Ph2_CSC212;
+
+import java.util.Scanner;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class main { 
+   
+	public static Scanner input = new Scanner(System.in);
+
+    // Data from files (Phase I dataset)
+    public static CustomerData cdata = new CustomerData("customers.csv");
+    public static productsData pdata = new productsData("prodcuts.csv");
+    public static OrderData odata = new OrderData("orders.csv");
+    public static reviewsData rdata = new reviewsData("reviews.csv");
+     
+    
+    // AVL Structures (Phase II requirement) 
+    public static AVLTree<Customer> customers = cdata.getCustomerData();
+    public static AVLTree<Product> products = pdata.getProductsList();
+    public static AVLTree<Order> orders = odata.getOrdersData();
+    public static LinkedList<Review> reviews = rdata.getReviewList();
+ 
+
+    public static void main(String[] args) {
+
+        
+        int choice = -1;
+
+        while (choice != 0) {
+            System.out.println("\n============================");
+            System.out.println("          MAIN MENU");
+            System.out.println("============================");
+            System.out.println("1) Customer System");
+            System.out.println("2) Product System");
+            System.out.println("3) Order System");
+            System.out.println("4) Review System");
+            System.out.println("0) Exit");
+            System.out.print("Enter choice: ");
+
+            choice = input.nextInt();
+            System.out.println();
+
+            switch (choice) {
+
+                case 1:
+                    customerMenu();
+                    break;
+
+                case 2:
+                    productMenu();
+                    break;
+
+                case 3:
+                    orderMenu();
+                    break;
+
+                case 4:
+                    reviewMenu();
+                    break;
+
+                case 0:
+                    System.out.println("Exiting program...");
+                    break;
+
+                default:
+                    System.out.println("Invalid choice. Try again.");
+            }
+        }
+    }
+
+    // ============================
+    // PLACEHOLDER MENUS (empty)
+    // ============================
+
+    public static void customerMenu() {
+
+        int choice = -1;
+
+        while (choice != 0) {
+
+            System.out.println("\n============================");
+            System.out.println("        CUSTOMER MENU");
+            System.out.println("============================");
+            System.out.println("1) Insert new customer");
+            System.out.println("2) Search for customer by ID");
+            System.out.println("3) List all customers alphabetically");
+            System.out.println("4) Customer order history");
+            System.out.println("0) Exit");
+            System.out.print("Enter choice: ");
+
+            choice = input.nextInt();
+            input.nextLine();
+            System.out.println();
+
+            switch (choice) {
+
+                case 1: {
+                    System.out.print("Enter Customer ID: ");
+                    int id = input.nextInt();
+                    input.nextLine();
+
+                    System.out.print("Enter Name: ");
+                    String name = input.nextLine();
+
+                    System.out.print("Enter Email: ");
+                    String email = input.nextLine();
+
+                    Customer c = new Customer(id, name, email);
+
+                    cdata.addCustomer(c);
+                    break;
+                }
+
+                case 2: {
+                    Customer c = cdata.getCustomer();
+
+                    if (c != null) {
+                        System.out.println("\nCustomer Found:");
+                        System.out.println("ID: " + c.getCustomerId());
+                        System.out.println("Name: " + c.getName());
+                        System.out.println("Email: " + c.getEmail());
+                    }
+                    break;
+                }
+
+                case 3:
+                    System.out.println("\nAll customers sorted alphabetically:");
+                    CustomerData.customersByName.inOrder();
+                    break;
+
+                case 4:
+                    cdata.OrderHistory();
+                    break;
+
+                case 0:
+                    return;
+
+                default:
+                    System.out.println("Invalid choice — try again.");
+            }
+        }
+    }
+
+    public static void productMenu() {
+        int ch;
+        do {
+        	 System.out.println("\n============================");
+             System.out.println("         PRODUCT MENU");
+             System.out.println("============================");       
+        	System.out.println("1) Add a new product ");
+        	System.out.println("2) Remove a product ");
+        	System.out.println("3) Update product ");
+        	System.out.println("4) Search by Id ");
+        	System.out.println("5) Search by name ");
+        	System.out.println("6) Track out of stock products ");
+        	System.out.println("7) List all products wihin a price range ");
+        	System.out.println("8) Display customers who reviewed a product ");
+        	System.out.println("0) Return to main menu");
+        	ch = input.nextInt();
+  switch(ch) {
+  case 1:
+  	pdata.addProduct();
+  	break;
+  	
+  case 2:
+  	pdata.removeProduct();
+  	break;
+  
+  case 3:
+	  pdata.updateProduct();
+	  break;
+	 
+  case 4 :{
+	  System.out.println("Enter product ID :");
+	   int pid = input.nextInt();
+	  Product p = pdata.searchProductbyID(pid);
+	  if(p == null)
+		  System.out.println(" product is not found ");}
+	  break;
+	 
+  case 5:{
+	 Product p = pdata.searchProductbyName();
+	  if(p != null) {
+		  System.out.println(p.toString());  
+	  }
+	  else
+		  System.out.println(" product is not found ");}
+	  break;
+  case 6:
+	  pdata.outOfStockProducts();
+	  break;
+	  
+  case 7:
+	  pdata.productsByPrice();
+	  break;
+	  
+  case 8:
+	  customerReviewedProduct_ID();
+	  break;
+	  
+  case 0 :
+      System.out.println("Returning to main menu...");
+	  break;
+	  
+  default:
+      System.out.println("Invalid choice.");  
+  }//switch
+        	
+        	
+        	
+        }while(ch!=0);//do
+    } 
+
+
+    public static void orderMenu() {
+
+        int choice = -1;
+
+        while (choice != 0) {
+
+            System.out.println("\n============================");
+            System.out.println("         ORDER MENU");
+            System.out.println("============================");       
+            System.out.println("1) Create Order");
+            System.out.println("2) Cancel order");
+            System.out.println("3) Update Order Status");
+            System.out.println("4) Search for Order by id");
+            System.out.println("5) Show all orders between two dates");
+            System.out.println("0) Exit");
+            System.out.print("Choose: ");
+
+            choice = input.nextInt();
+            input.nextLine();
+
+            switch(choice) {
+
+            case 1: 
+                createOrder();
+                break;
+
+            case 2:
+                CancelOrder();
+                break;
+
+            case 3: 
+                System.out.println("update to the new status...");
+                if (orders.empty())
+                    System.out.println("empty Orders data");
+                else {
+                    System.out.println("Enter order ID: ");
+                    int orderID = input.nextInt();
+                    odata.UpdateStatus(orderID);
+                }
+                break;
+
+            case 4:
+                System.out.println("Enter order ID: ");
+                int orderID = input.nextInt();
+                Order found = odata.searchOrderID(orderID);
+
+                if (found != null)
+                    System.out.println(found.printOrder());
+                else
+                    System.out.println("no order found!");
+                break;
+
+            case 5:
+                System.out.println("Enter first date (dd/MM/yyyy)");
+                String date1 = input.next();
+
+                System.out.println("Enter second date (dd/MM/yyyy)");
+                String date2 = input.next();
+
+                AVLTree<Order> ordersInRange = odata.BetweenTwoDates(date1, date2);
+
+                if (ordersInRange.empty()) {
+                    System.out.println("No orders found between these dates.");
+                } 
+                else {
+                    System.out.println("Orders found:\n");
+                    printOrdersAVL(ordersInRange.getRoot());
+                }
+                break;
+
+            case 0:
+                System.out.println("Returning to main menu...");
+                break;
+
+            default:
+                System.out.println("Invalid choice.");
+            }
+        }
+    }
+
+    
+ 
+
+    public static void reviewMenu(){
+        int ch;
+        do {
+        	System.out.println("\n============================");
+            System.out.println("         REVIEW MENU");
+            System.out.println("============================");       
+            System.out.println("1) Add a review ");
+            System.out.println("2) Edit review ");
+            System.out.println("3) Show average rating for product ");
+            System.out.println("4) Top 3 products ");
+            System.out.println("5) Common products that have been reviewd between 2 customers ");
+            System.out.println("6) Show all reviews for a specific customer");
+            System.out.println("0) Return to main menu");
+            ch = input.nextInt();
+            
+            switch(ch){
+            case 1 :
+                addNewReview();
+                break;
+
+            case 2 :
+                rdata.updateReview();
+                break;
+
+            case 3:
+                System.out.println("Enter product id :");
+                int pId = input.nextInt();
+                while(!pdata.checkProductId(pId)){ 
+                    System.out.println("Product Id is not available , try again");
+                    pId = input.nextInt();
+                }
+                float AVG = avgRating(pId);
+                System.out.println("Average rating for "+pId+" = "+ AVG);
+                break;
+
+            case 4:
+            	top3ProductsRating();
+                break;
+
+            case 5:
+                Customer c1 = cdata.getCustomer();
+                Customer c2 = cdata.getCustomer();
+                if(c1!=null && c2!=null)
+                    commonProducts(c1.getCustomerId(),c2.getCustomerId());
+                else 
+                    System.out.println("Customer is not found");
+                break;
+
+            case 6:
+                System.out.println("Enter Customer ID:");
+                int cid = input.nextInt();
+                getReviewsByCustomer(cid);
+                break;
+
+            case 0:
+                System.out.println("Returning to main menu...");
+                break;
+
+            default:
+                System.out.println("Invalid choice.");
+            }
+
+        } while (ch != 0);
+    }//end review
+    
+    //=============== methods ====================
+    
+    public static void CustomerReviewedProduct_ID() {
+
+        System.out.println("Enter product ID:");
+        int pid = input.nextInt();
+
+        while (!products.findKey(pid)) {
+            System.out.println("Product not found, re-enter:");
+            pid = input.nextInt();
+        }
+
+        if (reviews.empty()) {
+            System.out.println("No reviews found.");
+            return;
+        }
+
+        AVLTree<Customer> sortedCustomers = new AVLTree<>();
+
+        reviews.findFirst();
+        for (int i = 0; i < reviews.size(); i++) {
+
+            Review r = reviews.retrieve();
+
+            if (r.getProductId() == pid) {
+
+               
+                if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+
+                    Customer c = CustomerData.customersIDs.retrieve();
+
+                    sortedCustomers.insert(c.getCustomerId(), c);
+                }
+            }
+
+            if (!reviews.last())
+                reviews.findNext();
+        }
+
+        if (sortedCustomers.empty()) {
+            System.out.println("No customers reviewed this product.");
+        } else {
+            System.out.println("\nCustomers who reviewed product " + pid + ":");
+            sortedCustomers.inOrder();
+        }
+    }
+
+    
+    
+//================== create Order =====================
+    
+    public static void createOrder() {
+
+        Order new_order = new Order();
+        double total_price = 0;  
+
+        System.out.println("***digits only!*** \nEnter order ID: ");
+        int oid = input.nextInt();
+
+        while (orders.search(oid) != null) {
+            System.out.println("Order ID already exists. Re-enter order id");
+            oid = input.nextInt();
+        }
+        new_order.setId(oid);
+
+        System.out.println("Enter customer ID:");
+        int cid = input.nextInt();
+
+        while (customers.search(cid) == null) {
+            System.out.println("Re-enter customer ID");
+            cid = input.nextInt();
+        }
+        new_order.setCusRef(cid);
+
+        // Products
+        char answer = 'y';
+        while (answer == 'y' || answer == 'Y') {
+
+            System.out.println("Enter product ID:");
+            int pid = input.nextInt();
+
+            Product pp = products.search(pid);   // AVL search
+
+            if (pp == null) {
+                System.out.println("No such product id");
+            }
+            else {
+                if (pp.getStock() == 0) {
+                    System.out.println("product out of stock");
+                }
+                else {
+                    // update stock
+                    pp.setStock(pp.getStock() - 1);
+ 
+                    System.out.println("product added to order");
+
+                    new_order.addProduct(pid,pid); 
+                    total_price += pp.getPrice();
+                }
+            }
+
+            System.out.println("Do you want to continue adding product? (Y/N)");
+            answer = input.next().charAt(0);
+        }
+
+        new_order.setTotalPrice(total_price);
+
+        // Date 
+        System.out.println("Enter date (dd/mm/yyyy)");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate Ldate = LocalDate.parse(input.next(), formatter);
+        new_order.setOrderDate(Ldate);
+
+        // ====== Status ======
+        System.out.println("Enter status (pending, shipped, delivered, cancelled):");
+
+        String status;
+        while (true) {
+            status = input.next().toLowerCase();
+            if (status.equals("pending") || status.equals("shipped") ||
+                status.equals("delivered") || status.equals("cancelled"))  
+            {
+                break;
+            } else {
+                System.out.println("Invalid status. Enter pending/shipped/delivered/cancelled:");
+            }
+        }
+        new_order.setStatus(status);
+
+        //Insert order
+        orders.insert(new_order.getId(), new_order);
+
+        //Save order in customer 
+        Customer cust = customers.search(new_order.getCusRef());
+
+        if (cust != null) {
+            cust.placeOrder(oid);
+
+            customers.removeKey(cust.getCustomerId());
+            customers.insert(cust.getCustomerId(), cust);
+        }
+
+        System.out.println("Order had been added ");
+        System.out.println(new_order.printOrder());
+    }
+
+
+    //================== Cancel order =================
+    public static void CancelOrder() 
+    {
+        System.out.println("Enter order id: ");
+        int oid = input.nextInt();
+
+        Order cancel_order = odata.searchOrderID(oid);
+
+        while (cancel_order == null) {
+            System.out.println("order id not found re-enter order id: ");
+            oid = input.nextInt();
+            cancel_order = odata.searchOrderID(oid);
+        }
+
+        // Cancel in AVL
+        int r = odata.RemoveOrder(oid);
+
+        if (r == 1) {
+
+            // UPDATE CUSTOMER
+            Customer cust = customers.search(cancel_order.getCusRef());
+            if (cust != null) 
+            {
+                customers.removeKey(cust.getCustomerId());
+                cust.removeOrder(oid);  
+                customers.insert(cust.getCustomerId(), cust);
+            }
+
+ 
+            //Restock product 
+            AVLNode<Integer> pNode = cancel_order.getProducts().getRoot();
+            restockProducts(pNode);
+
+
+            System.out.println("order (" + cancel_order.getId() + ") had been cancelled");
+        }
+    }
+    
+    private static void restockProducts(AVLNode<Integer> node) 
+    {
+        if (node == null)
+            return;
+
+        restockProducts(node.left);
+
+        Integer productId = node.data;
+        Product prod = products.search(productId);
+
+        if (prod != null) 
+        {
+            prod.addStock(1);  
+            products.removeKey(productId);
+            products.insert(productId, prod);
+        }
+
+        restockProducts(node.right);
+    } 
+
+    //================= print orders =================
+    private static void printOrdersAVL(AVLNode<Order> node) {
+        if (node == null)
+            return;
+
+        printOrdersAVL(node.left);
+
+        System.out.println(node.data.printOrder());
+
+        printOrdersAVL(node.right);
+    } 
+ 
+ 
+    //========= top 3 products ==============
+    public static void top3ProductsRating() {
+        LinkedPQ<Product> top3 = new LinkedPQ<Product> (); 
+
+        LinkedList<Product> allProducts = products.inOrdertraverseData();
+         
+        if (!allProducts.empty()) 
+        {
+            allProducts.findFirst();
+            for (int i = 0 ; i < allProducts.size() ; i++)
+            {
+                
+                Product p = allProducts.retrieve();
+                float AVGrating = avgRating (p.getProductId());
+                top3.enqueue(p, AVGrating);
+                
+                allProducts.findNext();
+            }
+        }
+        
+        System.out.println("top 3 products by average rating from most to least.");
+        for ( int j = 1 ; j <= 3 && top3.length() > 0 ; j++)
+        {
+            PQElement<Product> top = top3.serve();
+            System.out.println("Product " + j + "  " + top.data.getProductId() 
+                    + " " + top.data.getName() + " AVG rate (" + top.priority + ")" );
+        }
+    }
+    
+    public static float avgRating(int pid)
+    {
+        int counter =0;
+        float rate = 0;
+        
+        reviews.findFirst();
+        while (! reviews.last())
+        {
+            if (reviews.retrieve().getProductId() == pid)
+            {
+                counter ++;
+                rate += reviews.retrieve().getRating();
+            }
+            reviews.findNext(); 
+        }
+        if (reviews.retrieve().getProductId() == pid)
+        {
+            counter ++;
+            rate += reviews.retrieve().getRating();
+        }
+        
+        if (counter == 0) return 0;
+        return rate / counter;
+
+    }
+    
+    
+    // ====================== DISPLAY CUSTOMERS WHO REVIEWED A PRODUCT  ================================
+   
+    public static void customerReviewedProduct_ID() {  
+ 
+        AVLTree<Customer> c = new AVLTree<>();
+
+        System.out.println("Enter product ID:");
+        int pid = input.nextInt(); 
+
+        while (!products.findKey(pid)) {
+            System.out.println("Product not found, re-enter:");
+            pid = input.nextInt();
+         }
+
+        if (reviews.empty()) {
+            System.out.println("No reviews found.");
+            return;
+        }
+
+        reviews.findFirst();
+
+        while (!reviews.last()) {
+
+            Review r = reviews.retrieve();
+ 
+            if (r.getProductId() == pid) {
+                if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+                    Customer found = CustomerData.customersIDs.retrieve();
+                    c.insert(found.getCustomerId(), found);
+                }
+            }
+
+            reviews.findNext();
+        }
+
+        // Check last element
+        Review r = reviews.retrieve();
+        if (r.getProductId() == pid) {
+            if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+                Customer found = CustomerData.customersIDs.retrieve();
+                c.insert(found.getCustomerId(), found);
+            }
+        }
+
+        c.inOrder();
+    }
+    
+    ///////
+    public static void commonProducts(int cid1, int cid2) {
+    	   LinkedList<Integer> customer1Products = new LinkedList<Integer>();
+    	   LinkedList<Integer> customer2Products = new LinkedList<Integer>();
+    	   if(!reviews.empty()) {
+    	        
+    	       reviews.findFirst();
+    	       for(int i = 0; i < reviews.size(); i++) {
+    	           if(reviews.retrieve().getCustomerId() == cid1) {
+    	               int productId = reviews.retrieve().getProductId();
+    	                
+
+    	               Product p = pdata.searchProductbyID(productId);
+    	               if(p != null && !containsProduct(customer1Products, productId)) {
+    	                   customer1Products.insert(productId);
+    	               }
+    	           }
+    	           if(!reviews.last()) reviews.findNext();
+    	       }
+    	       
+    	       reviews.findFirst();
+    	       for(int i = 0; i < reviews.size(); i++) {
+    	           if(reviews.retrieve().getCustomerId() == cid2) {
+    	               int productId = reviews.retrieve().getProductId();
+    	               Product p = pdata.searchProductbyID(productId);
+    	               if(p != null && !containsProduct(customer2Products, productId)) {
+    	                   customer2Products.insert(productId);
+    	               }
+    	           }
+    	           if(!reviews.last()) reviews.findNext();
+    	       }
+    	        
+    	       LinkedPQ<Product> commonProductsPQ = new LinkedPQ<Product>();
+    	       boolean foundCommon = false;
+    	       customer1Products.findFirst();
+    	       for(int i = 0; i < customer1Products.size(); i++) {
+    	           int productId = customer1Products.retrieve();
+    	           if(containsProduct(customer2Products, productId)) {
+
+    	float avgRate = avgRating(productId);
+    	               
+    	                    if(avgRate >= 4) {
+    	                   Product p = pdata.searchProductbyID(productId);
+    	                   
+
+    	                   if(p != null) {
+    	                       commonProductsPQ.enqueue(p, avgRate);
+    	                       foundCommon = true;
+    	                   }
+    	               }
+    	           }
+    	           if(!customer1Products.last()) customer1Products.findNext();
+    	       }
+    	       
+    	       if(foundCommon) {
+    	           System.out.println("** Common Products **");
+    	           while(commonProductsPQ.length() > 0) {
+    	               PQElement<Product> productR = commonProductsPQ.serve();
+    	               
+
+    	               if(productR != null && productR.data != null) {
+    	                   System.out.println("Product: " + productR.data.getName() + " | Average Rate: " + 
+    	productR.priority);
+    	               }
+    	           }
+    	       } else {
+    	           System.out.println("There are no common products reviewed by these two customers with rating >= 4");
+    	       }
+    	   } else {
+    	       System.out.println("There are no reviews");
+    	   }
+    	}
+    	///////////////////////////////
+
+    	public static boolean containsProduct(LinkedList<Integer> list, int productId) {
+    	   if(list.empty())
+    	       return false;
+    	   list.findFirst();
+    	   for(int i = 0; i < list.size(); i++) {
+    	       if(list.retrieve() == productId) {
+    	           return true;
+    	       }
+    	       if(!list.last()) 
+    	           list.findNext();
+    	   }
+    	   return false;
+    	}
+    	
+    	 public static void addNewReview() {
+
+    		    System.out.println("Enter customer Id : ");
+    		    int cId = input.nextInt();
+    		    while(!cdata.CustomerIDCheck(cId)) {
+    		        System.out.println("Customer Id is not available, try again");
+    		        cId = input.nextInt();
+    		    }
+
+    		    System.out.println("Enter product Id : ");
+    		    int pId = input.nextInt();
+    		    while(!pdata.checkProductId(pId)) {
+    		        System.out.println("Product Id is not available, try again");
+    		        pId = input.nextInt();
+    		    }
+
+    		    Review review = rdata.addReview(cId, pId);
+    		    System.out.println(review.toString());
+    		}
+    		   
+    	 
+    	 
+    	      public static void getReviewsByCustomer(int cid) {
+    		 
+    		    if (reviews.empty()) {
+    		        System.out.println("No reviews available.");
+    		        return;
+    		    }
+
+    		    boolean found = false;
+
+    		    reviews.findFirst();
+    		    for (int i = 0; i < reviews.size(); i++) {
+
+    		        Review r = reviews.retrieve();
+
+    		        if (r.getCustomerId() == cid) {
+    		            System.out.println(r.toString());
+    		            found = true;
+    		        }
+
+    		        if (!reviews.last())
+    		            reviews.findNext();
+    		    }
+
+    		    if (!found)
+    		        System.out.println("This customer has no reviews.");
+    		}
+    		    
+    		    
+}
