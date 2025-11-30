@@ -109,6 +109,8 @@ public class main {
                     Customer c = new Customer(id, name, email);
 
                     cdata.addCustomer(c);
+                    customers = cdata.getCustomerData();
+
                     break;
                 }
 
@@ -196,7 +198,7 @@ public class main {
 	  break;
 	  
   case 8:
-	  customerReviewedProduct_ID();
+	  CustomerReviewedProduct_ID();
 	  break;
 	  
   case 0 :
@@ -364,49 +366,47 @@ public class main {
     //=============== methods ====================
     
     public static void CustomerReviewedProduct_ID() {
+  
 
-        System.out.println("Enter product ID:");
-        int pid = input.nextInt();
+    	    System.out.println("Enter product ID:");
+    	    int pid = input.nextInt(); 
 
-        while (!products.findKey(pid)) {
-            System.out.println("Product not found, re-enter:");
-            pid = input.nextInt();
-        }
+    	    while (!products.findKey(pid)) {
+    	        System.out.println("Product not found, re-enter:");
+    	        pid = input.nextInt();
+    	    }
 
-        if (reviews.empty()) {
-            System.out.println("No reviews found.");
-            return;
-        }
+    	    if (reviews.empty()) {
+    	        System.out.println("No reviews found in the system.");
+    	        return;
+    	    }
 
-        AVLTree<Customer> sortedCustomers = new AVLTree<>();
+    	    AVLTree<Customer> sortedCustomers = new AVLTree<>();
 
-        reviews.findFirst();
-        for (int i = 0; i < reviews.size(); i++) {
+    	    reviews.findFirst();
+    	    for (int i = 0; i < reviews.size(); i++) {
 
-            Review r = reviews.retrieve();
+    	        Review r = reviews.retrieve();
 
-            if (r.getProductId() == pid) {
+    	        if (r.getProductId() == pid) {
+    	            if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+    	                Customer c = CustomerData.customersIDs.retrieve();
+    	                sortedCustomers.insert(c.getCustomerId(), c);
+    	            }
+    	        }
 
-               
-                if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
+    	        if (!reviews.last())
+    	            reviews.findNext();
+    	    }
 
-                    Customer c = CustomerData.customersIDs.retrieve();
+    	    if (sortedCustomers.empty()) {
+    	        System.out.println("No reviews for this product.");
+    	    } else {
+    	        System.out.println("Customers who reviewed product " + pid + ":");
+    	        sortedCustomers.inOrder();
+    	    }
+    	}
 
-                    sortedCustomers.insert(c.getCustomerId(), c);
-                }
-            }
-
-            if (!reviews.last())
-                reviews.findNext();
-        }
-
-        if (sortedCustomers.empty()) {
-            System.out.println("No customers reviewed this product.");
-        } else {
-            System.out.println("\nCustomers who reviewed product " + pid + ":");
-            sortedCustomers.inOrder();
-        }
-    }
 
     
     
@@ -637,50 +637,6 @@ public class main {
     
     // ====================== DISPLAY CUSTOMERS WHO REVIEWED A PRODUCT  ================================
    
-    public static void customerReviewedProduct_ID() {  
- 
-        AVLTree<Customer> c = new AVLTree<>();
-
-        System.out.println("Enter product ID:");
-        int pid = input.nextInt(); 
-
-        while (!products.findKey(pid)) {
-            System.out.println("Product not found, re-enter:");
-            pid = input.nextInt();
-         }
-
-        if (reviews.empty()) {
-            System.out.println("No reviews found.");
-            return;
-        }
-
-        reviews.findFirst();
-
-        while (!reviews.last()) {
-
-            Review r = reviews.retrieve();
- 
-            if (r.getProductId() == pid) {
-                if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
-                    Customer found = CustomerData.customersIDs.retrieve();
-                    c.insert(found.getCustomerId(), found);
-                }
-            }
-
-            reviews.findNext();
-        }
-
-        // Check last element
-        Review r = reviews.retrieve();
-        if (r.getProductId() == pid) {
-            if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
-                Customer found = CustomerData.customersIDs.retrieve();
-                c.insert(found.getCustomerId(), found);
-            }
-        }
-
-        c.inOrder();
-    }
     
     ///////
     public static void commonProducts(int cid1, int cid2) {
