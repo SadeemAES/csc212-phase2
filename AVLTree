@@ -1,7 +1,7 @@
-package Ph2_CSC212;
+package csc212_phase2;
 
 
-
+ 
 public class AVLTree<T> { 
 	
     public int size;
@@ -179,10 +179,8 @@ public class AVLTree<T> {
 
 
     // ===================== HEIGHT + BALANCE FACTOR =====================
-
     private int height(AVLNode<T> node) {
-        if (node == null) return -1;
-        return 1 + Math.max(height(node.left), height(node.right));
+        return (node == null ? -1 : node.height);
     }
 
     private int getBF(AVLNode<T> node) {
@@ -195,73 +193,86 @@ public class AVLTree<T> {
 
     private AVLNode<T> updateBalance(AVLNode<T> node) {
 
-        int bf = getBF(node);
+        // Update height (O(1))
+        node.height = 1 + Math.max(height(node.left), height(node.right));
 
-        // update enum balance inside the node
+        // Compute BF
+        int bf = height(node.right) - height(node.left);
+
+        // Update enum balance
         if (bf > 0)
             node.bal = Balance.PlusOne;
-        else if (bf < 0) 
+        else if (bf < 0)
             node.bal = Balance.MinusOne;
         else
             node.bal = Balance.Zero;
 
-        // Right heavy 
+        //Balance cases
         if (bf > 1) {
-            if (getBF(node.right) >= 0)
-                return rotateRightRight(node);   // RR
+            // Right heavy
+            if (height(node.right.right) >= height(node.right.left))
+                return rotateRightRight(node);  // RR
             else
-                return rotateRightLeft(node);    // RL
+                return rotateRightLeft(node);   // RL
         }
 
-        // Left heavy
         if (bf < -1) {
-            if (getBF(node.left) <= 0)
-                return rotateLeftLeft(node);     // LL
+            // Left heavy
+            if (height(node.left.left) >= height(node.left.right))
+                return rotateLeftLeft(node);   // LL
             else
-                return rotateLeftRight(node);    // LR
+                return rotateLeftRight(node);  // LR
         }
 
         return node;
     }
 
 
+
     // LL rotation
     private AVLNode<T> rotateLeftLeft(AVLNode<T> node) {
-
         AVLNode<T> a = node.left;
         AVLNode<T> b = a.right;
 
         a.right = node;
         node.left = b;
 
+        // UPDATE HEIGHTS
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+        a.height = 1 + Math.max(height(a.left), height(a.right));
+
         return a;
     }
 
+
     // RR rotation
     private AVLNode<T> rotateRightRight(AVLNode<T> node) {
-
         AVLNode<T> a = node.right;
         AVLNode<T> b = a.left;
 
         a.left = node;
         node.right = b;
 
+        // UPDATE HEIGHTS
+        node.height = 1 + Math.max(height(node.left), height(node.right));
+        a.height = 1 + Math.max(height(a.left), height(a.right));
+
         return a;
     }
 
+
     // LR rotation
     private AVLNode<T> rotateLeftRight(AVLNode<T> node) {
-
         node.left = rotateRightRight(node.left);
         return rotateLeftLeft(node);
     }
 
     // RL rotation
     private AVLNode<T> rotateRightLeft(AVLNode<T> node) {
-
         node.right = rotateLeftLeft(node.right);
         return rotateRightRight(node);
     }
+
     
     
 
