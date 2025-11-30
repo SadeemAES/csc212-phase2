@@ -1,18 +1,20 @@
-package Ph2_CSC212;
+package csc212_phase2;
 
 public class AVLNode<T> {
-	   public int key;             
-	   public T data;               
-	   public Balance bal;              
-	   public AVLNode<T> left;
-	   public AVLNode<T> right;
 
-	    public AVLNode(int key, T data) {
-	        this.key = key;
-	        this.data = data;
-	        this.bal = Balance.Zero;
-	        this.left = null;
-	        this.right = null;
-	    } 
-	    
-	}   
+    public int key;            
+    public T data;
+    public Balance bal;
+    public AVLNode<T> left;
+    public AVLNode<T> right;
+    public int height;   
+
+    public AVLNode(int key, T data) {
+        this.key = key;
+        this.data = data;
+        this.bal = Balance.Zero;
+        this.left = null;
+        this.right = null;
+        this.height = 0; 
+    }
+}
