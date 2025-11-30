@@ -69,9 +69,6 @@ public class main {
         }
     }
 
-    // ============================
-    // PLACEHOLDER MENUS (empty)
-    // ============================
 
     public static void customerMenu() {
 
@@ -210,7 +207,7 @@ public class main {
                 if(sub == 1)
                     CustomerReviewedProduct_ID();   
                 else if(sub == 2)
-                    CustomerReviewedProduct_ByRate();
+                	CustomerReviewedProduct_ByRate_AVL();
                 else
                     System.out.println("Invalid choice.");
                 break;
@@ -806,25 +803,22 @@ public class main {
     	      
     	      //------------------------------------------------------------------
     	      
-    	      public static void CustomerReviewedProduct_ByRate() {
+    	      public static void CustomerReviewedProduct_ByRate_AVL() {
 
     	    	    System.out.println("Enter product ID:");
     	    	    int pid = input.nextInt();
 
-    	    	
     	    	    while (!products.findKey(pid)) {
     	    	        System.out.println("Product not found, re-enter:");
     	    	        pid = input.nextInt();
     	    	    }
 
-    	    	   
     	    	    if (reviews.empty()) {
     	    	        System.out.println("No reviews found in the system.");
     	    	        return;
     	    	    }
 
-    	    	  
-    	    	    LinkedPQ<Customer> pq = new LinkedPQ<>();
+    	    	    AVLTree<Customer> ratingTree = new AVLTree<>();
 
     	    	    reviews.findFirst();
     	    	    for (int i = 0; i < reviews.size(); i++) {
@@ -832,12 +826,10 @@ public class main {
     	    	        Review r = reviews.retrieve();
 
     	    	        if (r.getProductId() == pid) {
-
     	    	            if (CustomerData.customersIDs.findKey(r.getCustomerId())) {
-
     	    	                Customer c = CustomerData.customersIDs.retrieve();
-
-    	    	                pq.enqueue(c, r.getRating());
+    	    	                int rateKey = (int) r.getRating();
+    	    	                ratingTree.insert(rateKey, c);
     	    	            }
     	    	        }
 
@@ -845,22 +837,15 @@ public class main {
     	    	            reviews.findNext();
     	    	    }
 
-    	    	    if (pq.length() == 0) {
+    	    	    if (ratingTree.empty()) {
     	    	        System.out.println("No customers reviewed this product.");
     	    	        return;
     	    	    }
 
     	    	    System.out.println("\nCustomers who reviewed product " + pid + " (sorted by rating):");
-
-    	    	    while (pq.length() > 0) {
-    	    	        PQElement<Customer> e = pq.serve();
-    	    	        System.out.println(
-    	    	            "Customer ID: " + e.data.getCustomerId() +
-    	    	            " | Name: " + e.data.getName() +
-    	    	            " | Rating: " + e.priority
-    	    	        );
-    	    	    }
+    	    	    printCustomers_ID(ratingTree.getRoot());
     	    	}
+
 
     		    
     		    
