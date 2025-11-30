@@ -164,6 +164,7 @@ public class main {
             System.out.println("6) Track out of stock products");
             System.out.println("7) List all products within a price range");
             System.out.println("8) Display customers who reviewed a product");
+            System.out.println("9) Display customers who reviewed a product by rating ");
             System.out.println("0) Return to main menu");
             ch = input.nextInt();
 
@@ -219,6 +220,10 @@ public class main {
                 	CustomerReviewedProduct_ByRate_AVL();
                 else
                     System.out.println("Invalid choice.");
+                break;
+
+            case 9:
+                CustomerReviewedProduct_ByRate_AVL();
                 break;
 
             case 0:
