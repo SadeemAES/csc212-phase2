@@ -24,50 +24,59 @@ public class main {
 
     public static void main(String[] args) {
 
-        
         int choice = -1;
 
         while (choice != 0) {
-            System.out.println("\n============================");
-            System.out.println("          MAIN MENU");
-            System.out.println("============================");
-            System.out.println("1) Customer System");
-            System.out.println("2) Product System");
-            System.out.println("3) Order System");
-            System.out.println("4) Review System");
-            System.out.println("0) Exit");
-            System.out.print("Enter choice: ");
 
-            choice = input.nextInt();
-            System.out.println();
+            try {
 
-            switch (choice) {
+                System.out.println("\n============================");
+                System.out.println("          MAIN MENU");
+                System.out.println("============================");
+                System.out.println("1) Customer System");
+                System.out.println("2) Product System");
+                System.out.println("3) Order System");
+                System.out.println("4) Review System");
+                System.out.println("0) Exit");
+                System.out.print("Enter choice: ");
 
-                case 1:
-                    customerMenu();
-                    break;
+                choice = input.nextInt();
+                System.out.println();
 
-                case 2:
-                    productMenu();
-                    break;
+                switch (choice) {
 
-                case 3:
-                    orderMenu();
-                    break;
+                    case 1:
+                        customerMenu();
+                        break;
 
-                case 4:
-                    reviewMenu();
-                    break;
+                    case 2:
+                        productMenu();
+                        break;
 
-                case 0:
-                    System.out.println("Exiting program...");
-                    break;
+                    case 3:
+                        orderMenu();
+                        break;
 
-                default:
-                    System.out.println("Invalid choice. Try again.");
+                    case 4:
+                        reviewMenu();
+                        break;
+
+                    case 0:
+                        System.out.println("Exiting program...");
+                        break;
+
+                    default:
+                        System.out.println("Invalid choice. Try again.");
+                }
+
+            } catch (Exception e) {
+                System.out.println("Invalid input! Please enter numbers only.");
+                input.nextLine(); 
+                choice = -1;
             }
         }
     }
+
 
 
     public static void customerMenu() {
