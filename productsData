@@ -1,4 +1,4 @@
-package Ph2_CSC212;
+package csc212_phase2;
 import java.io.File;
 import java.util.Scanner;
 
@@ -191,46 +191,39 @@ return found || leftch || rightch;
  } 
  /////////////////////////////////////////////////////
  public void productsByPrice() {
-	 if(products.empty()) {
-		 System.out.println("There is no products :");
-	     return;}
-System.out.println("Enter minimum price :");
-double miniP = input.nextDouble();
+	    if (products.empty()) {
+	        System.out.println("There is no products :");
+	        return;
+	    }
 
-System.out.println("Enter maximum price :");
-double maxP = input.nextDouble();
+	    System.out.println("Enter minimum price :");
+	    double miniP = input.nextDouble();
 
-while (miniP >= maxP)
-{
-    System.out.println("Re-enter range (max must be grater than min price) ");
-    System.out.println("minPrice :");
-    miniP = input.nextDouble();
-    System.out.println("maxPrice :");
-    maxP = input.nextDouble();
-}
-System.out.println("Products in price range (" + miniP + " - "+ maxP + ")");
+	    System.out.println("Enter maximum price :");
+	    double maxP = input.nextDouble();
 
-boolean found =  productsByPriceRec( products.getRoot(), miniP ,  maxP);
+	    while (miniP >= maxP) {
+	        System.out.println("Re-enter range (max must be greater than min price) ");
+	        System.out.println("minPrice :");
+	        miniP = input.nextDouble();
+	        System.out.println("maxPrice :");
+	        maxP = input.nextDouble();
+	    }
 
-if(!found)
-	System.out.println("No products found in this price range");
- 
- }////
-private boolean  productsByPriceRec(AVLNode<Product> node , double miniP , double maxP){
-	if (node == null)
-		return false;
-boolean found = false;
+	    AVLTree<Product> result = rangeQueryByPrice(products.getRoot(), miniP, maxP);
 
-boolean leftch =  productsByPriceRec( node.left, miniP ,  maxP);
+	    if (result == null || result.empty()) {
+	        System.out.println("No products found in this price range");
+	        return;
+	    }
 
-if(node.data != null && node.data.getPrice()>= miniP && node.data.getPrice()<= maxP) {
-	System.out.println(node.data);
-	found = true;}
- 
-boolean rightch =  productsByPriceRec( node.right, miniP ,  maxP);
-return found || leftch || rightch;
-}
-//////////////////////////////////////////////////////////
+	    System.out.println("Products in price range (" + miniP + " - " + maxP + "):");
+	    result.inOrder();
+	}
+
+//==============================
+  
+//==================================
  
 public boolean checkProductId(int pId){
 	  
@@ -241,21 +234,24 @@ public boolean checkProductId(int pId){
 //================== Range Query by Price ================
 
 
-	public AVLTree<Product> rangeQueryByPrice(double minPrice, double maxPrice) {
+public AVLTree<Product> rangeQueryByPrice(AVLNode<Product> node, double minPrice, double maxPrice) {
 
-	    AVLTree<Product> result = new AVLTree<Product>();
+    AVLTree<Product> result = new AVLTree<Product>();
 
-	    // ensure valid range
-	    if (minPrice > maxPrice) {
-	        double tmp = minPrice;
-	        minPrice = maxPrice;
-	        maxPrice = tmp;
-	    }
+    if (node == null)
+        return result;
 
-	    rangeQueryByPriceRec(products.getRoot(), minPrice, maxPrice, result);
+    if (minPrice > maxPrice) {
+        double tmp = minPrice;
+        minPrice = maxPrice;
+        maxPrice = tmp;
+    }
 
-	    return result;
-	}
+    rangeQueryByPriceRec(node, minPrice, maxPrice, result);
+
+    return result;
+}
+
 
 
 	private void rangeQueryByPriceRec(AVLNode<Product> node, double minPrice, double maxPrice, AVLTree<Product> result) 
@@ -280,4 +276,3 @@ public boolean checkProductId(int pId){
  
  
 }
-
